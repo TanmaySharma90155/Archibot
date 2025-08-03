@@ -1,4 +1,4 @@
-    <!-- templates/index.html -->
+<!-- templates/index.html -->
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -7,9 +7,28 @@
     </head>
     <body>
         <h1>Enter your query for AI:</h1>
-        <form action="/predict" method="post">
-            <input type="text" name="user_input" placeholder="Type here...">
+        <form id="ai-form">
+            <input type="text" id="user_input" name="user_input" placeholder="Type here...">
             <button type="submit">Get AI Response</button>
         </form>
+        <div id="response"></div>
+        <script>
+            document.getElementById('ai-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const userInput = document.getElementById('user_input').value;
+                const responseDiv = document.getElementById('response');
+                responseDiv.textContent = "Loading...";
+                const res = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ user_input: userInput })
+                });
+                const data = await res.json();
+                console.log(data);
+                responseDiv.textContent = data.response;
+            });
+        </script>
     </body>
     </html>
